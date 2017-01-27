@@ -2,6 +2,11 @@ runtime: python27
 api_version: 1
 threadsafe: yes
 
+env_variables:
+    CLOUDSQL_CONNECTION_NAME: ajjohnso-aware
+    CLOUDSQL_USER: root
+    CLOUDSQL_PASSWORD: Oink0ink
+    
 handlers:
 - url: .*
   script: main.app
@@ -11,3 +16,5 @@ libraries:
   version: "2.6"
 - name: markupsafe
   version: "0.15"
+- name: MySQLdb
+  version: "latest"
