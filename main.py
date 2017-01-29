@@ -1,3 +1,16 @@
+# Imports
+import os
+import jinja2
+import webapp2
+import logging
+
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
+
+
+
 from flask import Flask
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -8,8 +21,8 @@ app.config['DEBUG'] = True
 
 @app.route('/')
 def hello():
-    """Return a friendly HTTP greeting."""
-    return 'Hello World!'
+    template = JINJA_ENVIRONMENT.get_template('templates/index.html')
+    return template.render()
 
 
 @app.errorhandler(404)
@@ -24,7 +37,7 @@ import webapp2
 
 
 # These environment variables are configured in app.yaml.
-CLOUDSQL_CONNECTION_NAME = os.environ.get('ajjohnso-aware')
+CLOUDSQL_CONNECTION_NAME = os.environ.get('ajjohnso-mobile')
 CLOUDSQL_USER = os.environ.get('amandajohnso1023')
 CLOUDSQL_PASSWORD = os.environ.get('Oink0ink')
 
@@ -36,12 +49,12 @@ def connect_to_cloudsql():
         # Connect using the unix socket located at
         # /cloudsql/cloudsql-connection-name.
         cloudsql_unix_socket = os.path.join(
-            '/cloudsql', CLOUDSQL_CONNECTION_NAME)
+            '/cloudsql', ajjohnso-byte3:ajjohnso-mobile)
 
         db = MySQLdb.connect(
             unix_socket=cloudsql_unix_socket,
-            user=CLOUDSQL_USER,
-            passwd=CLOUDSQL_PASSWORD)
+            user=amandajohnso1023,
+            passwd=Oink0ink)
 
     # If the unix socket is unavailable, then try to connect using TCP. This
     # will work if you're running a local MySQL server or using the Cloud SQL
@@ -51,7 +64,7 @@ def connect_to_cloudsql():
     #
     else:
         db = MySQLdb.connect(
-            host='127.0.0.1', user=CLOUDSQL_USER, passwd=CLOUDSQL_PASSWORD)
+            host='127.0.0.1', user=amandajohnson1023, passwd=Oink0ink)
 
     return db
 
