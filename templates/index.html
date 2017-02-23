@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
-    <title>Mobile Byte Tutorial</title>
+    <title>Mobile Byte</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -17,6 +17,21 @@
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="css/theme.css" rel="stylesheet">
+ 
+ 	<!-- Vega-lite visualization libraries -->
+    <script src="//d3js.org/d3.v3.min.js"></script>
+  	<script src="//vega.github.io/vega/vega.js"></script>
+  	<script src="//vega.github.io/vega-lite/vega-lite.js"></script>
+  	<script src="//vega.github.io/vega-editor/vendor/vega-embed.js" charset="utf-8"></script>
+    
+    <style media="screen">
+	    /* Add space between vega-embed links  */
+	    .vega-actions a {
+	      margin-right: 5px;
+	    }
+	  </style>
+  
+  
   </head>
 
   <body role="document">
@@ -35,6 +50,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
+        <li><a href="/about">About This Data Set</a></li>
 	    <li><a href="quality">Data Quality</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -45,21 +61,184 @@
 
       <!-- Main jumbotron for a primary marketing message or call to action -->
       <div class="jumbotron">
-	<h1>Data Pipeline Project Mobile Byte Example</h1>
-        <p>This is the Mobile Byte of the Data Pipeline class.</p>
+	<h1>Exploring and Using Mobile Data</h1>
+        <p>For this byte, I will be exploring my location and activities 
+        using data collected on my mobile phone. I was interested in learning the times  
+        of the day where I am most active, and wanted to visualize where I have been in Pittsburgh over the past few weeks. </p>
       </div>
+  
+  <h2>Significant Activities During the Study Period</h2>
+<p> During the study period I: 
+<li>Travelled to and from my apartment in Lawrenceville to the CMU campus most weekdays. </li>
+<li>Went running around Schenley Park and Frick Park over the weekends. </li>
+<li>Ran errands and did grocery shopping in East Liberty on the weekends. </li>
+<li>Studied at my favorite coffee shop and dined around places in Lawrenceville throughout the week. </li>
+<li>Went shopping around Walnut street in Shadyside.</li>
+</p> 
 
-   <h2>Query Results</h2>
-   <ul>
-   {% for item in queries %}
-   <li>Query: {{item.query}}<br>
-       {% for row in item.results %}
-          {{row}}<br>
-       {% endfor %}
-   </li>
-   {% endfor %}
+ <h2>General Apporach to Cleaning the Data</h2>
+<p>My approach to cleaning the data was to export it from the google cloud database and then import and clean the data in Wrangler.
+Overall, I heavily used the <a href="http://www.awareframework.com/">Aware Documentation</a> to understand the output 
+from the tables and data collected. I checked to make sure the variables made sense, for example there is a variable called "bearing"
+ in both datasets, to make sure that the data made sense I checked to see that the values were not below 0 or over 360 degrees. Since I was not able
+ to collect the <tt>plugin_google_activity_recognition</tt>, table I was able to use the speed variable to generate and bin my activity data into 3 different categories:
+ <li>Still: the speed data was 0.</li>
+ <li>Walking:the speed data was less than or equal to 5mps. </li>
+ <li>Driving: the speed data was over 5mps.</li>
+ 
+ </br>
+ I choose these cuts in the data, since I run quite often. I looked up the average walking speed, which is about 1.4 meters/second and 
+looked at the cutpoints in my data. There seemed to be a natural split at around 4.8 meters/second. Unless I'm doing sprints, 
+I am deffinitely not running faster than that. 
+ </p>
 
+ <h2>Raw Location Data</h2>
+  <p>The visual below is a graph representing the amount of data I collected 
+  per day during the data collection period, which was from January 30-February 21. 
+  This gives me a good sense of what days I need to 
+  pay particular attention to when addressing missing or incomplete data. 
+  For example, I might look into why I don't have as much data on February 3rd and February 17th. 
+   </p>
+   
+   <!-- Example of Vega-lite graph -->
+   <div id="vis"></div>
+   <!-- Vega-lite graphing code. -->
+   <script>
+	  // Assign the specification to a local variable vlSpec.
+	  var vlSpec = {
+	    "data": {
+	      "values": [
+			{% for row in queries[0].results %}
+          		{"date": "{{row[0]}}", "count": {{row[1]}}},
+       		{% endfor %}
+	      ]
+	    },
+	    "mark": "bar",
+	    "encoding": {
+	      "x": {
+	      	"field": "date", "type": "nominal",
+		    "axis": {
+		        "title": "Date"
+		     }},
+	      "y": {
+	        "field": "count", "type": "quantitative",
+	        "axis": {
+	          "title": "Record Count"
+	        }
+	      }
+	    }
+	  };
+	
+	  var embedSpec = {
+	    mode: "vega-lite",  // Instruct Vega-Embed to use the Vega-Lite compiler
+	    spec: vlSpec
+	    // You can add more vega-embed configuration properties here.
+	    // See https://github.com/vega/vega/wiki/Embed-Vega-Web-Components#configuration-propeties for more information.
+	  };
+	
+	  // Embed the visualization in the container with id `vis`
+	  vg.embed("#vis", embedSpec, function(error, result) {
+	    // Callback receiving the View instance and parsed Vega spec
+	    // result.view is the View, which resides under the '#vis' element
+	  });
+	  
+ </script>
+<p> *Note: The tiny bit of data on Feburary 22 was collected since I did not turn off my study, 
+  but those results are not included in the rest of the analysis or visualizations. </p> 
+
+ <h2>Activities Throughout the Day</h2>
+  
+  <p>The visual below represents my activities by hour within a day. I averaged the over the days within the study.
+  The x-axis begins at 12 midnight EST (0) and goes to 11pm (23) during that particular day. 
+   </p>
+   <!-- Example of Vega-lite graph -->
+   <div id="vis2"></div>
+   <!-- Vega-lite graphing code. -->
+   <script>
+	  // Assign the specification to a local variable vlSpec2.
+	  var vlSpec2 = {
+  
+ "data": { "url": "data/locations4_new.csv"
+  
+  },
+ "mark": "circle",
+  "encoding": {
+    "y": {
+      "timeUnit": "day",
+      "field": "time",
+      "type": "temporal"
+    },
+    "x": {
+      "timeUnit": "hours",
+      "field": "time",
+      "type": "temporal"
+    },
+    "size": {
+      "field": "count1",
+      "type": "quantitative",
+      "aggregate": "sum"
+    }
+	}
+
+  };
+
+
+
+	
+	  var embedSpec2 = {
+	    mode: "vega-lite",  // Instruct Vega-Embed to use the Vega-Lite compiler
+	    spec: vlSpec2
+	    // You can add more vega-embed configuration properties here.
+	    // See https://github.com/vega/vega/wiki/Embed-Vega-Web-Components#configuration-propeties for more information.
+	  };
+	
+	  // Embed the visualization in the container with id `vis`
+	  vg.embed("#vis2", embedSpec2, function(error, result) {
+	    // Callback receiving the View instance and parsed Vega spec
+	    // result.view is the View, which resides under the '#vis' element
+	  });
+	  
+//TODO Add two new vega graphs 
+
+ </script>
+ 
+ <button id="b1" onclick="show2()">Stillness</button>
+ <button id="b2" onclick="show3()">Walking/Running</button>
+ <button id="b3" onclick="show4()">Driving/Bus</button>
+ 
+ <script>
+ 	function show2() {
+ 		var div = document.getElementById('vis2');
+ 		div.style.display= "block";
+ 		
+ 		var div = document.getElementById('vis2');
+ 		div.style.display= "none";
+ 	}
+ 	
+ 	function show3() {
+ 		var div = document.getElementById('vis3');
+ 		div.style.display= "none";
+ 	}
+ 	
+ 	function show4() {
+ 		var div = document.getElementById('vis4');
+ 		div.style.display= "none";
+ 	}
+ 	
+ </script>
+
+
+ <h2>Locations I Visited</h2>
+ <p>To visualize all of the places I visited in Pittsburgh over the past few weeks, 
+ I geocoded all of the location data, using my <tt>location_activity</tt> dataset. For reference, 
+ I have marked the apporximate location of my apartment and CMU, these are the two places where 
+ I spent a majority of my time. You can click each point on the map to see how many times I 
+ have visited each location. As you can see from the map, I have not traveled far from my house over the past few weeks.  </p>
+   
    <div class="page-header">
+
+	<iframe width="500" height="300" scrolling="no" frameborder="no" src="https://fusiontables.google.com/embedviz?q=select+col0+from+11H-2nhDRX5hEyt30yeX1O6bQ5eeS8OMjMy4RmwmT&amp;viz=MAP&amp;h=false&amp;lat=40.45753436566435&amp;lng=-79.931098335922&amp;t=1&amp;z=13&amp;l=col0&amp;y=2&amp;tmplt=2&amp;hml=ONE_COL_LAT_LNG"></iframe>
+
 	<p> You should add information here, including some tables
 	and/or charts, telling the reader about the relationship
 	  between time and activity in your data.</p>

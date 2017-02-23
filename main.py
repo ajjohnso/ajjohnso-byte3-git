@@ -126,7 +126,7 @@ def index():
     
     return template.render(context)
 
-    
+
 @app.route('/about')
 def about():
     template = JINJA_ENVIRONMENT.get_template('templates/about.html')

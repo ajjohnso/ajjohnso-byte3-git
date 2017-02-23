@@ -16,6 +16,21 @@
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="css/theme.css" rel="stylesheet">
+  
+  <!-- Vega-lite visualization libraries -->
+    <script src="//d3js.org/d3.v3.min.js"></script>
+  	<script src="//vega.github.io/vega/vega.js"></script>
+  	<script src="//vega.github.io/vega-lite/vega-lite.js"></script>
+  	<script src="//vega.github.io/vega-editor/vendor/vega-embed.js" charset="utf-8"></script>
+    
+    <style media="screen">
+	    /* Add space between vega-embed links  */
+	    .vega-actions a {
+	      margin-right: 5px;
+	    }
+	  </style>
+  
+  
   </head>
 
   <body role="document">
@@ -46,27 +61,101 @@
       <!-- Main jumbotron for a primary marketing message or call to action -->
       <div class="jumbotron">
 	<h1>Quality: About This Data Set</h1>
-        <p>Write a brief summary about the quality of the data set here</a></p>
+        <p>I had high ambitions about the data I collected, but after cleaning 
+        just a couple of the many tables I have collected, I realized how challenging 
+        it can be to group and bin the data, especially with missing data and data that may not be completely accurate. </a></p>
       </div>
 
     
       <div class="page-header">
 	<h2>Is the data complete?</h2>
-	<p>If not, what is missing and what concerns does it raise?
-	What is your evidence for this?</p>
+	<p>For the most part, I was able to collect a good amount 
+	of data for each of the days in the study period, however I did run into issues of 
+	missing data when my phone died during the middle of the day. When this did happen, it was always at around 3pm during the weekend. 
+	This could potentially introduce systematic bias in the data, but I was able to account for some of the missing data since my schedule is 
+	generally consistent during the week. 
+	</br>
+	Below is a graph that looks at data collection for one particular day in the study. In a perfect world, the data 
+	collected each hour would be exactly the same, however due to network issues or my phone running out of battery, that is not the case. On T
+	this particular day, I wasn't able to collect any day at around 7am. 
+	</p>
+	 <!-- Example of Vega-lite graph -->
+   <div id="vis3"></div>
+   <!-- Vega-lite graphing code. -->
+   <script>
+	  // Assign the specification to a local variable vlSpec.
+	  var vlSpec3 = {
+	   
+  "description": "A simple bar chart with embedded data.",
+  "data": {
+    "values": [
+      {"x": 0,"y": 49},
+      {"x": 1,"y": 51},
+      {"x": 2,"y": 39},
+      {"x": 3,"y": 36},
+      {"x": 4,"y": 50},
+      {"x": 5,"y": 48},
+      {"x": 6,"y": 28},
+      {"x": 7,"y": 0},
+      {"x": 8,"y": 83},
+      {"x": 9,"y": 48},
+      {"x": 10,"y": 41},
+      {"x": 11,"y": 48},
+      {"x": 12,"y": 42},
+      {"x": 13,"y": 26},
+      {"x": 14,"y": 17},
+      {"x": 15,"y": 26},
+      {"x": 16,"y": 20},
+      {"x": 17,"y": 21},
+      {"x": 18,"y": 35},
+      {"x": 19,"y": 24},
+      {"x": 20,"y": 30},
+      {"x": 21,"y": 66},
+      {"x": 22,"y": 50},
+      {"x": 23,"y": 49}
+    ]
+  },
+  "mark": "bar",
+  "encoding": {
+    "x": {"field": "x","type": "quantitative", 
+    "axis": {"title": "Data for Wednesday, 2/1/17"}
+    },
+    "y": {"field": "y","type": "quantitative",
+    "axis": {"title": "Number of Observations by Hour"}
+    }
+  }
+};
+	
+	  var embedSpec3 = {
+	    mode: "vega-lite",  // Instruct Vega-Embed to use the Vega-Lite compiler
+	    spec: vlSpec3
+	    // You can add more vega-embed configuration properties here.
+	    // See https://github.com/vega/vega/wiki/Embed-Vega-Web-Components#configuration-propeties for more information.
+	  };
+	
+	  // Embed the visualization in the container with id `vis`
+	  vg.embed("#vis3", embedSpec3, function(error, result) {
+	    // Callback receiving the View instance and parsed Vega spec
+	    // result.view is the View, which resides under the '#vis' element
+	  });
+ </script>
+      
       </div>
       
       <div class="page-header">
 	<h2>Is the data coherent?</h2>
-	<p>Does it make sense relative to itself? Does it match your
-	expectations? Are the distributions sensible? What is your
-	evidence for this?</p>
+	<p>The data is coherent in the sense that most of the data points occur near my house and 
+	around CMU's campus. These are the two places I spent a majority of my time during the study. 
+	Additionally, the data variables and their values made sense for what they were measuring.</p>
       </div>
 
       <div class="page-header">
 	<h2>Is the data correct?</h2>
-	<p>What aspects of this data can you verify? How did you do so? What did
-	you find?</p>
+	<p>After initially looking at the map, I did not recognize some of the places on the map. Some of the
+	location data was a few buildings or streets off. This was especially true around my house. To fix this, 
+	I looked at the different addresses generated by the 
+	location activity table and binned the addresses by the general activity during that time. In general, 
+	I was surprised at how accurate the data was. All of the places on the map were places I had visited over the past few weeks.</p>
       </div>
 
     </div> <!-- /container -->
