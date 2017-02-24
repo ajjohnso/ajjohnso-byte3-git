@@ -76,7 +76,7 @@
 <li>Went shopping around Walnut street in Shadyside.</li>
 </p> 
 
- <h2>General Apporach to Cleaning the Data</h2>
+ <h2>General Approach to Cleaning the Data</h2>
 <p>My approach to cleaning the data was to export it from the google cloud database and then import and clean the data in Wrangler.
 Overall, I heavily used the <a href="http://www.awareframework.com/">Aware Documentation</a> to understand the output 
 from the tables and data collected. I checked to make sure the variables made sense, for example there is a variable called "bearing"
@@ -148,9 +148,12 @@ I am deffinitely not running faster than that.
 
  <h2>Activities Throughout the Day</h2>
   
-  <p>The visual below represents my activities by hour within a day. I averaged the over the days within the study.
-  The x-axis begins at 12 midnight EST (0) and goes to 11pm (23) during that particular day. 
+  <p>The visual below represents my activities grouped by hour within a day. 
+  The x-axis begins at 12 midnight EST (0) and goes to 11pm (23) during that particular day. You can click on the buttons below to see
+  the data captured when I was still (or when my phone was still), when I was walking or moving, and when I was driving. A big portion of the data collected
+  was when I was still, but I did see patterns in what times I tend to walk or run. 
    </p>
+   
    <!-- Example of Vega-lite graph -->
    <div id="vis2"></div>
    <!-- Vega-lite graphing code. -->
@@ -158,7 +161,7 @@ I am deffinitely not running faster than that.
 	  // Assign the specification to a local variable vlSpec2.
 	  var vlSpec2 = {
   
- "data": { "url": "data/locations4_new.csv"
+ "data": { "url": "data/locations4_nomove.csv"
   
   },
  "mark": "circle",
@@ -182,9 +185,6 @@ I am deffinitely not running faster than that.
 
   };
 
-
-
-	
 	  var embedSpec2 = {
 	    mode: "vega-lite",  // Instruct Vega-Embed to use the Vega-Lite compiler
 	    spec: vlSpec2
@@ -197,31 +197,142 @@ I am deffinitely not running faster than that.
 	    // Callback receiving the View instance and parsed Vega spec
 	    // result.view is the View, which resides under the '#vis' element
 	  });
+
+	 </script>
+
+<!-- Example of Vega-lite graph -->
+   <div id="vis3" style="display: none"></div>
+   <!-- Vega-lite graphing code. -->
+   <script>
+	   // Assign the specification to a local variable vlSpec3.
+	  var vlSpec3 = {
+  
+ "data": { "url": "data/locations4_walking.csv"
+  
+  },
+ "mark": "circle",
+  "encoding": {
+    "y": {
+      "timeUnit": "day",
+      "field": "time",
+      "type": "temporal"
+    },
+    "x": {
+      "timeUnit": "hours",
+      "field": "time",
+      "type": "temporal"
+    },
+    "size": {
+      "field": "count1",
+      "type": "quantitative",
+      "aggregate": "sum"
+    }
+	}
+
+  };
+
+	
+	  var embedSpec3 = {
+	    mode: "vega-lite",  // Instruct Vega-Embed to use the Vega-Lite compiler
+	    spec: vlSpec3
+	    // You can add more vega-embed configuration properties here.
+	    // See https://github.com/vega/vega/wiki/Embed-Vega-Web-Components#configuration-propeties for more information.
+	  };
+	
+	  // Embed the visualization in the container with id `vis`
+	  vg.embed("#vis3", embedSpec3, function(error, result) {
+	    // Callback receiving the View instance and parsed Vega spec
+	    // result.view is the View, which resides under the '#vis' element
+	  });
+
+	  </script>
 	  
-//TODO Add two new vega graphs 
+	  <!-- Example of Vega-lite graph -->
+   <div id="vis4" style="display: none" ></div>
+   <!-- Vega-lite graphing code. -->
+   <script>
+
+	  // Assign the specification to a local variable vlSpec4.
+	  var vlSpec4 = {
+  
+ "data": { "url": "data/locations4_driving.csv"
+  
+  },
+ "mark": "circle",
+  "encoding": {
+    "y": {
+      "timeUnit": "day",
+      "field": "time",
+      "type": "temporal"
+    },
+    "x": {
+      "timeUnit": "hours",
+      "field": "time",
+      "type": "temporal"
+    },
+    "size": {
+      "field": "count1",
+      "type": "quantitative",
+      "aggregate": "sum"
+    }
+	}
+
+  };
+
+	  var embedSpec4 = {
+	    mode: "vega-lite",  // Instruct Vega-Embed to use the Vega-Lite compiler
+	    spec: vlSpec4
+	    // You can add more vega-embed configuration properties here.
+	    // See https://github.com/vega/vega/wiki/Embed-Vega-Web-Components#configuration-propeties for more information.
+	  };
+	
+	  // Embed the visualization in the container with id `vis`
+	  vg.embed("#vis4", embedSpec4, function(error, result) {
+	    // Callback receiving the View instance and parsed Vega spec
+	    // result.view is the View, which resides under the '#vis' element
+	  });
+	  
 
  </script>
  
- <button id="b1" onclick="show2()">Stillness</button>
- <button id="b2" onclick="show3()">Walking/Running</button>
- <button id="b3" onclick="show4()">Driving/Bus</button>
+ <button id="b1" onclick="showvis2()">Stillness</button>
+ <button id="b2" onclick="showvis3()">Walking</button>
+ <button id="b3" onclick="showvis4()">Driving</button>
  
  <script>
- 	function show2() {
- 		var div = document.getElementById('vis2');
+ 	function showvis2() {
+ 		
+ 		var div = document.getElementById("vis2");
  		div.style.display= "block";
  		
- 		var div = document.getElementById('vis2');
+ 		var div = document.getElementById("vis3");
+ 		div.style.display= "none";
+ 
+ 		var div = document.getElementById("vis4");
  		div.style.display= "none";
  	}
  	
- 	function show3() {
- 		var div = document.getElementById('vis3');
+ 	function showvis3() {
+ 	
+ 		var div = document.getElementById("vis3");
+ 		div.style.display= "block";
+ 		
+ 		var div = document.getElementById("vis2");
+ 		div.style.display= "none";
+ 
+ 		var div = document.getElementById("vis4");
  		div.style.display= "none";
  	}
  	
- 	function show4() {
- 		var div = document.getElementById('vis4');
+ 	function showvis4() {
+ 		
+ 		var div = document.getElementById("vis4");
+ 		div.style.display= "block";
+ 		
+ 		var div = document.getElementById("vis2");
+ 		div.style.display= "none";
+ 
+ 		var div = document.getElementById("vis3");
  		div.style.display= "none";
  	}
  	
@@ -231,22 +342,30 @@ I am deffinitely not running faster than that.
  <h2>Locations I Visited</h2>
  <p>To visualize all of the places I visited in Pittsburgh over the past few weeks, 
  I geocoded all of the location data, using my <tt>location_activity</tt> dataset. For reference, 
- I have marked the apporximate location of my apartment and CMU, these are the two places where 
+ I have marked the approximate location of my apartment and CMU, these are the two places where 
  I spent a majority of my time. You can click each point on the map to see how many times I 
  have visited each location. As you can see from the map, I have not traveled far from my house over the past few weeks.  </p>
    
+   
+ 
+
    <div class="page-header">
 
 	<iframe width="500" height="300" scrolling="no" frameborder="no" src="https://fusiontables.google.com/embedviz?q=select+col0+from+11H-2nhDRX5hEyt30yeX1O6bQ5eeS8OMjMy4RmwmT&amp;viz=MAP&amp;h=false&amp;lat=40.45753436566435&amp;lng=-79.931098335922&amp;t=1&amp;z=13&amp;l=col0&amp;y=2&amp;tmplt=2&amp;hml=ONE_COL_LAT_LNG"></iframe>
 
-	<p> You should add information here, including some tables
-	and/or charts, telling the reader about the relationship
-	  between time and activity in your data.</p>
-
-	<p> You should also add information here, including some tables
-	and/or charts, telling the reader about the relationship
-	between time and location in your data.</p>
+	
       </div> <!-- /page-header -->
+      
+      
+    <h2> Discussion </h2>
+ <p> Working with this data was a little strange, since it was about me. It was cool to see where I could fill in the gaps, 
+ but also interesting to look at the overall activity and location patterens throughout the past couple of weeks. A few final thoughts: 
+ <li>Most of the data collected on location was when I was still or inactive. </li>
+ <li>I drove more on the weekends, and particularly on Saturdays when I wasn't at school.</li>
+ <li>I visited more locations by my apartment and by CMU's campus.</li>
+ <li>Finally, collecting the data at a very fine grain level, can be difficult to manage and make sense
+ of, so in the future I should think more carefully about what I'm trying to understand.  </li>
+
     </div> <!-- /container -->
 
 
